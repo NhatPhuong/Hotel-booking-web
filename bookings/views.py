@@ -5,4 +5,4 @@ from .models import RoomType
 
 def index(request):
     rooms = RoomType.objects.all()
-    return render(request, 'Hotel-booking-web/Hotel-booking-web/bookings/templates/bookings/index.html')
+    return render(request, 'bookings/index.html')
