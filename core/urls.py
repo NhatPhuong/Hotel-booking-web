@@ -19,6 +19,6 @@ from django.urls import path, include
 from bookings import views # Thêm dòng này
 
 urlpatterns = [
-    path('admin/', admin.site.view),
+    path('admin/', admin.site.urls),
     path('', views.index, name='index'), # Trang chủ sẽ chạy hàm index
 ]
