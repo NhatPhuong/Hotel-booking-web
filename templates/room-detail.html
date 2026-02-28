@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Phòng - F4 Hotel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}" style="color: var(--gold); font-size: 1.8rem;">F4 HOTEL</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('aboutus') }}">Giới thiệu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('all_rooms_page') }}">Phòng nghỉ</a>
+                    <li class="nav-item"><a class="nav-link" href="#">Ẩm thực</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Ưu đãi</a></li>
+                    <li class="nav-item">
+                </ul>
+            </div>
+            <a href="{{ url_for('index') }}#rooms-container" class="btn btn-luxury d-none d-lg-block">BOOK NOW</a>
+        </div>
+    </nav>
+
+    <div style="height: 120px; background-color: var(--dark-forest);"></div>
+
+    <div class="container my-5 py-5 animate__animated animate__fadeIn">
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+                <div class="row g-5">
+                    <div class="col-md-7">
+                        <img src="{{ url_for('static', filename=room.image_url) }}" class="img-fluid rounded shadow-lg" alt="{{ room.name }}">
+                    </div>
+                    
+                    <div class="col-md-5">
+                        <h6 class="text-gold text-uppercase" style="letter-spacing: 3px;">{{ room.view }} View</h6>
+                        <h1 class="display-4 fw-bold mb-4" style="font-family: 'Playfair Display';">{{ room.name }}</h1>
+                        <p class="lead text-muted mb-4">{{ room.description }}</p>
+                        
+                        <div class="mb-4">
+                            <h3 class="text-gold fw-bold">{{ "{:,.0f}".format(room.price) }} VND <span class="small text-muted" style="font-size: 0.5em;">/ ĐÊM</span></h3>
+                        </div>
+
+                        <ul class="list-unstyled mb-5">
+                            <li class="mb-2"><i class="fas fa-expand-arrows-alt text-gold me-2"></i> Diện tích: <strong>{{ room.area }} m²</strong></li>
+                            <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> Miễn phí bữa sáng</li>
+                            <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> Wifi tốc độ cao</li>
+                        </ul>
+
+                        <button class="btn btn-luxury w-100 py-3" onclick="alert('Chức năng đặt phòng đang bảo trì!')">ĐẶT PHÒNG NGAY</button>
+                        <a href="{{ url_for('all_rooms_page') }}" class="btn btn-outline-secondary w-100 mt-2">Quay lại danh sách</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-4 text-center" style="background: var(--dark-forest); color: white; border-top: 1px solid var(--gold);">
+        <p class="small mb-0">&copy; 2024 F4 HOTEL - THE FOREST EXPERIENCE</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

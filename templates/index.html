@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F4 Hotel & Restaurant | Luxury Nature</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-2" href="{{ url_for('index') }}" style="color: white !important;">F4 <span class="text-gold">HOTEL</span></a>
+            <div class="collapse navbar-collapse justify-content-center">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('aboutus') }}">Giới thiệu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('all_rooms_page') }}">Phòng nghỉ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Ẩm thực</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Ưu đãi</a></li>
+                </ul>
+            </div>
+            <div class="d-none d-lg-block text-white">
+                <small class="text-gold"><i class="fas fa-phone"></i></small> <span style="font-size: 14px;">0123.456.789</span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section text-center">
+        <div class="container">
+            <h4 class="text-uppercase mb-3" style="letter-spacing: 6px; font-weight: 300; font-size: 16px;">Chào mừng đến với trái tim của thiên nhiên</h4>
+            <h1 class="display-1 fw-bold mb-4" style="letter-spacing: -2px;">NGHỈ DƯỠNG & <span class="text-gold">TẬN HƯỞNG</span></h1>
+            <p class="lead mb-5" style="font-weight: 300; opacity: 0.8;">Khám phá không gian nghỉ dưỡng hòa mình giữa rừng núi đại ngàn tại F4.</p>
+        </div>
+
+        <div class="check-availability-wrapper">
+            <div class="check-availability-container">
+                <div class="check-item">
+                    <label>NGÀY ĐẾN</label>
+                    <input type="date" value="2026-02-26">
+                </div>
+                <div class="check-item">
+                    <label>NGÀY ĐI</label>
+                    <input type="date" value="2026-02-28">
+                </div>
+                <div class="check-item">
+                    <label>NGƯỜI LỚN</label>
+                    <select><option>01</option><option>02</option></select>
+                </div>
+                <div class="check-item">
+                    <label>TRẺ EM</label>
+                    <select><option>00</option><option>01</option></select>
+                </div>
+                <div class="check-button-area">
+                    <button class="btn-booking-gold">ĐẶT PHÒNG</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container" style="margin-top: 150px; margin-bottom: 100px;">
+        <div class="text-center mb-5">
+            <h6 class="text-uppercase fw-bold" style="color: var(--gold); letter-spacing: 2px;">Room & Suites</h6>
+            <h2 class="display-5 fw-bold" style="font-family: 'Playfair Display';">Phòng Nghỉ Nổi Bật</h2>
+            <p class="text-muted">Những không gian được yêu thích nhất bởi khách hàng của chúng tôi</p>
+        </div>
+
+        <div class="row g-4"> 
+            {% for room in featured_rooms %}
+            <div class="col-md-4">
+                <div class="room-card">
+                    <img src="{{ url_for('static', filename=room.image_url) }}" alt="{{ room.name }}">
+                    
+                    <div class="room-info-basic shadow-sm">
+                        <p class="small fw-bold text-gold mb-1">GIÁ TỪ {{ "{:,.0f}".format(room.price) }} VND / ĐÊM</p>
+                        <h4 class="fw-bold mb-1">{{ room.name }}</h4>
+                        <div class="text-warning small">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+
+                    <div class="room-info-detail">
+                        <p class="small fw-bold text-gold mb-1">{{ room.view }} View | {{ room.area }} m²</p>
+                        <h3 class="fw-bold mb-2">{{ room.name }}</h3>
+                        <p class="small text-muted mb-4">{{ room.description }}</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ url_for('room_detail_page', room_id=room.id) }}" class="btn btn-details">Thông tin chi tiết</a>
+                            <button class="btn btn-luxury" style="padding: 8px 15px; font-size: 11px;">Đặt ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{{ url_for('all_rooms_page') }}" class="btn-view-more">
+                KHÁM PHÁ TẤT CẢ PHÒNG NGHỈ <i class="fas fa-long-arrow-alt-right ms-2"></i>
+            </a>
+        </div>
+    <div>
+        
+    <script>
+        window.addEventListener('scroll', function () {
+            var navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
