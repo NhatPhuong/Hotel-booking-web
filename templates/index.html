@@ -20,7 +20,8 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('aboutus') }}">Giới thiệu</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('all_rooms_page') }}">Phòng nghỉ</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Ẩm thực</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Ưu đãi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('uu_dai') }}">Ưu đãi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('lien_he') }}">Liên hệ</a></li>
                 </ul>
             </div>
             <div class="d-none d-lg-block text-white">
@@ -48,11 +49,11 @@
                 </div>
                 <div class="check-item">
                     <label>NGƯỜI LỚN</label>
-                    <select><option>01</option><option>02</option></select>
+                    <select><option>01</option><option>02</option><option>03</option><option>04</option></select>
                 </div>
                 <div class="check-item">
                     <label>TRẺ EM</label>
-                    <select><option>00</option><option>01</option></select>
+                    <select><option>01</option><option>02</option><option>03</option><option>04</option></select>
                 </div>
                 <div class="check-button-area">
                     <button class="btn-booking-gold">ĐẶT PHÒNG</button>
@@ -101,8 +102,38 @@
                 KHÁM PHÁ TẤT CẢ PHÒNG NGHỈ <i class="fas fa-long-arrow-alt-right ms-2"></i>
             </a>
         </div>
-    <div>
-        
+    </div>
+
+    <section class="py-5" style="background-color: #fcfaf5;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h6 class="text-gold text-uppercase" style="letter-spacing: 3px;">Offers</h6>
+                    <h2 class="display-6 fw-bold mb-4" style="font-family: 'Playfair Display';">Ưu Đãi Độc Quyền</h2>
+                    <p class="text-muted mb-4">Khám phá các gói nghỉ dưỡng được thiết kế riêng để mang lại cho bạn những trải nghiệm tuyệt vời nhất với chi phí tối ưu.</p>
+                    <a href="{{ url_for('uu_dai') }}" class="btn-view-more" style="background: var(--dark-forest); color: white; padding: 12px 30px; text-decoration: none;">XEM TẤT CẢ ƯU ĐÃI</a>
+                </div>
+                <div class="col-lg-6 mt-4 mt-lg-0">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1544124499-58912cbddaad?auto=format&fit=crop&w=800&q=80" class="img-fluid rounded shadow" alt="Special Offer">
+                        <div class="position-absolute bottom-0 end-0 bg-white p-4 shadow-lg m-3 rounded" style="max-width: 250px; border-left: 4px solid var(--gold);">
+                            <h5 class="fw-bold mb-1">Summer Sale</h5>
+                            <p class="small text-muted mb-0">Giảm giá lên đến 30% cho các dịch vụ Spa & Sauna.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-5 text-center bg-white">
+        <div class="container">
+            <div class="mx-auto mt-4" style="width: 50px; height: 2px; background: var(--gold);"></div>
+            <h3 class="mt-4" style="font-family: 'Playfair Display';">{{ tri_an.tieu_de }}</h3>
+            <p class="text-muted font-italic mx-auto mt-3" style="max-width: 700px; font-style: italic;">"{{ tri_an.noi_dung }}"</p>
+        </div>
+    </footer>
+
     <script>
         window.addEventListener('scroll', function () {
             var navbar = document.querySelector('.navbar');

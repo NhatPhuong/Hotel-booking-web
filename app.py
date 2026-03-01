@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 import sqlite3
 import os
@@ -8,40 +8,21 @@ app = Flask(__name__)
 CORS(app)
 
 # =================================================================
-# 1. CẤU HÌNH DATABASE (Dùng chung cho toàn hệ thống)
+# 1. CẤU HÌNH DATABASE DÙNG CHUNG
 # =================================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "hotel.db")
 
 def get_db_connection():
+    """Hàm kết nối DB dùng chung cho toàn bộ ứng dụng"""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
-def init_db():
-    """Tạo bảng bookings nếu chưa tồn tại khi chạy ứng dụng"""
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS bookings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            room_id INTEGER NOT NULL,
-            check_in TEXT NOT NULL,
-            check_out TEXT NOT NULL,
-            guest_name TEXT NOT NULL,
-            guest_phone TEXT NOT NULL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
-        )
-        """
-    )
-    conn.commit()
-    conn.close()
-
 # =================================================================
-# 2. KHO DỮ LIỆU TĨNH (Dùng cho cả Trang chủ và Trang phòng nghỉ)
+# 2. DỮ LIỆU TĨNH (Rooms & Foods)
 # =================================================================
-rooms = [
+rooms_data = [
     {"id": 1, "name": "Kingsize Beach View", "price": 2500000, "area": 50, "view": "Biển", "image_url": "images/room1.jpg", "description": "Phòng giường king rộng rãi, view biển, phù hợp cặp đôi hoặc gia đình nhỏ."},
     {"id": 2, "name": "Deluxe Garden View", "price": 1800000, "area": 40, "view": "Vườn", "image_url": "images/room2.jpg", "description": "Phòng deluxe ấm cúng, nhìn ra khu vườn xanh mát, yên tĩnh."},
     {"id": 3, "name": "Premium Ocean Suite", "price": 3500000, "area": 70, "view": "Biển", "image_url": "images/room3.jpg", "description": "Suite cao cấp với phòng khách riêng, ban công rộng, hướng biển toàn cảnh."},
@@ -49,110 +30,131 @@ rooms = [
     {"id": 5, "name": "Standard Cozy Room", "price": 1300000, "area": 28, "view": "Nội khu", "image_url": "images/room5.jpg", "description": "Phòng tiêu chuẩn gọn gàng, đầy đủ tiện nghi, phù hợp khách công tác ngắn ngày."},
 ]
 
-foods = [
-    {"id": 1, "name": "Hải sản nướng thập cẩm", "price": 450000, "category": "Seafood", "image_url": "images/food1.jpg", "description": "Tôm, mực..."},
-    {"id": 8, "name": "Nước ép cam tươi", "price": 75000, "category": "Juice", "image_url": "images/drink_juice_orange.jpg", "description": "Cam tươi ép..."},
-    # ... (Bạn có thể thêm tiếp danh sách foods của bạn ở đây)
-]
+# =================================================================
+# 3. CÁC ROUTE TRANG GIAO DIỆN
+# =================================================================
 
-# =================================================================
-# 3. PHÂN ĐOẠN: TRANG CHỦ (INDEX)
-# =================================================================
 @app.route('/')
 def index():
-    """Hiển thị trang chủ với Top 3 phòng được đặt nhiều nhất"""
+    """Trang chủ: Kết hợp Top 3 phòng và Lời tri ân"""
+    loi_tri_an = {
+        "tieu_de": "Lời Tri Ân Từ F4 Hotel",
+        "noi_dung": "Hành trình của chúng tôi không thể trọn vẹn nếu thiếu đi sự tin tưởng của Quý khách..."
+    }
+    
     conn = get_db_connection()
-    # Đếm lượt đặt từng phòng trong Database
+    # Lấy ảnh giới thiệu từ DB
+    images = conn.execute('SELECT * FROM anh_gioi_thieu').fetchall()
+    
+    # Logic Top 3 phòng đặt nhiều nhất
     query = "SELECT room_id, COUNT(id) as count FROM bookings GROUP BY room_id ORDER BY count DESC"
     booking_counts = conn.execute(query).fetchall()
     conn.close()
 
     counts_dict = {row['room_id']: row['count'] for row in booking_counts}
-    
-    # Sắp xếp danh sách phòng dựa trên lượt đặt (giảm dần)
-    sorted_rooms = sorted(rooms, key=lambda x: counts_dict.get(x['id'], 0), reverse=True)
-    
-    # Chỉ lấy 3 phòng đầu tiên để hiện ở trang chủ
+    sorted_rooms = sorted(rooms_data, key=lambda x: counts_dict.get(x['id'], 0), reverse=True)
     featured_rooms = sorted_rooms[:3]
-    return render_template('index.html', featured_rooms=featured_rooms)
 
-# =================================================================
-# 4. PHÂN ĐOẠN: PHÒNG NGHỈ (ROOMS)
-# =================================================================
+    return render_template('index.html', featured_rooms=featured_rooms, tri_an=loi_tri_an, images=images)
 
+@app.route('/phong-nghi')
 @app.route('/all-rooms')
 def all_rooms_page():
-    """Giao diện danh sách TOÀN BỘ phòng (Trang 'Xem thêm')"""
-    return render_template('all_rooms.html', rooms=rooms)
+    """Giao diện danh sách toàn bộ phòng"""
+    return render_template('all_rooms.html', rooms=rooms_data)
 
 @app.route('/room-detail/<int:room_id>')
 def room_detail_page(room_id):
-    room = next((r for r in rooms if r["id"] == room_id), None)
+    """Trang chi tiết từng phòng"""
+    room = next((r for r in rooms_data if r["id"] == room_id), None)
     if not room:
-        return "Phòng không tồn tại", 404 # Thêm dòng này để tránh lỗi
+        return "Phòng không tồn tại", 404
     return render_template('room-detail.html', room=room)
+
+@app.route('/uu-dai')
+def uu_dai():
+    """Trang ưu đãi lấy từ DB"""
+    conn = get_db_connection()
+    danh_sach = conn.execute('SELECT * FROM uu_dai').fetchall()
+    conn.close()
+    return render_template('uudai.html', danh_sach_uu_dai=danh_sach)
+
+@app.route('/lien-he', methods=['GET', 'POST'])
+def lien_he():
+    """Trang liên hệ và xử lý gửi form"""
+    if request.method == 'POST':
+        ten = request.form.get('ho_ten')
+        email = request.form.get('email')
+        sdt = request.form.get('sdt')
+        noi_dung = request.form.get('noi_dung')
+        
+        conn = get_db_connection()
+        conn.execute('INSERT INTO lien_he (ho_ten, email, sdt, noi_dung) VALUES (?, ?, ?, ?)',
+                     (ten, email, sdt, noi_dung))
+        conn.commit()
+        conn.close()
+        return "Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất."
+    return render_template('lienhe.html')
+
+@app.route('/dat-phong', methods=['GET', 'POST'])
+def dat_phong_page():
+    """Trang đặt phòng (giao diện lịch của bạn mình)"""
+    return render_template('datphong.html')
+
+@app.route('/aboutus')
+def aboutus():
+    return render_template('aboutus.html')
+
+# =================================================================
+# 4. CÁC API XỬ LÝ DỮ LIỆU (JSON)
+# =================================================================
+
+@app.route("/api/bookings", methods=["POST"])
+def create_booking():
+    """API Đặt phòng thông minh có kiểm tra trùng lịch"""
+    data = request.get_json()
+    try:
+        room_id = int(data.get("room_id"))
+        check_in = data.get("check_in")
+        check_out = data.get("check_out")
+        guest_name = data.get("guest_name", "").strip()
+        guest_phone = data.get("guest_phone", "").strip()
+
+        # Kiểm tra logic ngày tháng
+        d_in = datetime.strptime(check_in, "%Y-%m-%d").date()
+        d_out = datetime.strptime(check_out, "%Y-%m-%d").date()
+        if d_out <= d_in:
+            return jsonify(success=False, message="Ngày trả phòng phải sau ngày nhận phòng"), 400
+
+        conn = get_db_connection()
+        # Kiểm tra trùng lịch
+        conflict = conn.execute(
+            "SELECT COUNT(*) as cnt FROM bookings WHERE room_id = ? AND check_in < ? AND check_out > ?",
+            (room_id, check_out, check_in)
+        ).fetchone()
+
+        if conflict["cnt"] > 0:
+            conn.close()
+            return jsonify(success=False, message="Phòng đã có người đặt trong thời gian này"), 409
+
+        # Lưu vào DB (Lưu ý: dùng bảng 'bookings' của bạn để khớp logic API)
+        conn.execute(
+            "INSERT INTO bookings (room_id, check_in, check_out, guest_name, guest_phone) VALUES (?, ?, ?, ?, ?)",
+            (room_id, check_in, check_out, guest_name, guest_phone)
+        )
+        conn.commit()
+        conn.close()
+        return jsonify(success=True, message="Đặt phòng thành công!"), 201
+    except Exception as e:
+        return jsonify(success=False, message=str(e)), 500
 
 @app.route("/api/rooms", methods=["GET"])
 def get_rooms_api():
-    """API trả về dữ liệu JSON của tất cả các phòng"""
-    return jsonify(rooms), 200
+    return jsonify(rooms_data), 200
 
 # =================================================================
-# 5. PHÂN ĐOẠN: ĐẶT PHÒNG (BOOKING) - LƯU VÀO DATABASE
-# =================================================================
-@app.route("/api/bookings", methods=["POST"])
-def create_booking():
-    """Xử lý yêu cầu đặt phòng từ khách hàng"""
-    data = request.get_json()
-    room_id = int(data.get("room_id"))
-    check_in = data.get("check_in")
-    check_out = data.get("check_out")
-    guest_name = data.get("guest_name", "").strip()
-    guest_phone = data.get("guest_phone", "").strip()
-
-    # Kiểm tra logic ngày tháng
-    d_in = datetime.strptime(check_in, "%Y-%m-%d").date()
-    d_out = datetime.strptime(check_out, "%Y-%m-%d").date()
-    if d_out <= d_in:
-        return jsonify(success=False, message="Ngày trả phòng phải sau ngày nhận phòng"), 400
-
-    conn = get_db_connection()
-    cur = conn.cursor()
-
-    # Kiểm tra xem phòng đã bị ai đặt trùng ngày chưa
-    cur.execute(
-        "SELECT COUNT(*) as cnt FROM bookings WHERE room_id = ? AND date(check_in) < date(?) AND date(check_out) > date(?)",
-        (room_id, check_out, check_in)
-    )
-    if cur.fetchone()["cnt"] > 0:
-        conn.close()
-        return jsonify(success=False, message="Phòng đã có người đặt trong thời gian này"), 409
-
-    # Nếu ổn, tiến hành lưu vào Database
-    cur.execute(
-        "INSERT INTO bookings (room_id, check_in, check_out, guest_name, guest_phone) VALUES (?, ?, ?, ?, ?)",
-        (room_id, check_in, check_out, guest_name, guest_phone)
-    )
-    conn.commit()
-    conn.close()
-    return jsonify(success=True, message="Đặt phòng thành công!"), 201
-
-# =================================================================
-# 6. PHÂN ĐOẠN: ẨM THỰC & KHÁC (FOODS & ABOUT)
-# =================================================================
-@app.route('/aboutus')
-def aboutus():
-    """Trang giới thiệu khách sạn"""
-    return render_template('aboutus.html')
-
-@app.route("/api/foods", methods=["GET"])
-def get_foods_api():
-    """API lấy danh sách món ăn"""
-    return jsonify(foods), 200
-
-# =================================================================
-# CHẠY ỨNG DỤNG
+# 5. KHỞI CHẠY
 # =================================================================
 if __name__ == "__main__":
-    init_db()  # Tự động tạo bảng khi bật server
+    # Lưu ý: Bảng bookings sẽ tự tạo nếu bạn đã chạy file init_db hợp nhất
     app.run(host="0.0.0.0", port=8000, debug=True)
