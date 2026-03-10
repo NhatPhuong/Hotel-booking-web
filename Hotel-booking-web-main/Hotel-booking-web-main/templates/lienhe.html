@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Liên hệ - F4 Hotel & Restaurant{% endblock %}
+{% block nav_class %}sub-page{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --dark-forest: #1a2a22;
+        --gold: #d4af37;
+    }
+
+    /* --- HEADER GIỐNG TRANG ƯU ĐÃI --- */
+    .page-header {
+        height: 450px;
+        background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://png.pngtree.com/thumb_back/fw800/background/20240716/pngtree-futuristic-villa-in-the-forest-background-generative-ai-image_16013367.jpg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .section-title-wrapper { text-align: center; }
+    .text-gold-caps { color: var(--gold); text-transform: uppercase; letter-spacing: 5px; font-weight: 600; font-size: 0.9rem; }
+    .main-title { font-family: 'Playfair Display', serif; font-weight: 700; color: #fff; margin-top: 10px; }
+    .title-line { width: 80px; height: 2px; background: var(--gold); margin: 20px auto 0; }
+
+    /* --- BREADCRUMB --- */
+    .breadcrumb-area { background: #fcfaf5; padding: 25px 0 10px 0; }
+
+    /* --- CONTACT FORM --- */
+    .contact-section { padding: 80px 0; background-color: #fcfaf5; }
+    .contact-info-card {
+        background: white;
+        padding: 40px;
+        border-radius: 4px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        height: 100%;
+        border-top: 4px solid var(--gold);
+    }
+    .info-item { display: flex; align-items: flex-start; margin-bottom: 25px; }
+    .info-item i { color: var(--gold); font-size: 1.5rem; margin-right: 20px; margin-top: 5px; }
+    
+    .form-control {
+        border-radius: 0;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        background: #fff;
+    }
+    .form-control:focus {
+        border-color: var(--gold);
+        box-shadow: none;
+    }
+    .btn-send {
+        background: var(--dark-forest);
+        color: white;
+        padding: 15px 40px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 13px;
+        border: none;
+        transition: 0.4s;
+    }
+    .btn-send:hover { background: var(--gold); color: white; }
+</style>
+
+<section class="page-header">
+    <div class="container">
+        <div class="section-title-wrapper">
+            <h6 class="text-gold-caps">Get in Touch</h6>
+            <h1 class="display-3 main-title">Liên hệ với chúng tôi</h1>
+            <div class="title-line"></div>
+        </div>
+    </div>
+</section>
+
+<div class="breadcrumb-area">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <p class="small text-uppercase" style="letter-spacing: 2px;">
+                <a href="{{ url_for('index') }}" class="text-decoration-none text-muted">Trang chủ</a> 
+                <span class="mx-2 text-muted">/</span> 
+                <span class="text-gold">Liên hệ</span>
+            </p>
+        </nav>
+    </div>
+</div>
+
+<section class="contact-section">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-5">
+                <div class="contact-info-card">
+                    <h3 class="mb-4" style="font-family: 'Playfair Display';">Thông tin liên hệ</h3>
+                    <p class="text-muted mb-5">Đội ngũ của F4 Hotel luôn sẵn sàng hỗ trợ bạn 24/7. Hãy liên hệ với chúng tôi để có trải nghiệm nghỉ dưỡng tuyệt vời nhất.</p>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">Địa chỉ</h6>
+                            <p class="text-muted mb-0">273 Đường Rừng Núi, Phường Thiên Nhiên, Đà Lạt</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">Điện thoại</h6>
+                            <p class="text-muted mb-0">0123.456.789</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">Email</h6>
+                            <p class="text-muted mb-0">contac_ust@f4hotel.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="p-4">
+                    <h3 class="mb-4" style="font-family: 'Playfair Display';">Gửi tin nhắn</h3>
+                    <form action="#" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" placeholder="Họ và tên" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="email" class="form-control" placeholder="Email" required>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <input type="text" class="form-control" placeholder="Tiêu đề" required>
+                            </div>
+                            <div class="col-md-12 mb-4">
+                                <textarea class="form-control" rows="5" placeholder="Nội dung tin nhắn" required></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn-send">Gửi yêu cầu ngay</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container-fluid p-0">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.285331326499!2d108.44186591471131!3d11.943018791535873!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317112f0a1036f0b%3A0x70529688435f3d!2zRGFsYXQsIExhbSBEb25nLCBWaWV0bmFt!5e0!3m2!1sen!2s!4v1620000000000!5m2!1sen!2s" width="100%" height="450" style="border:0; filter: grayscale(100%) invert(92%) contrast(83%);" allowfullscreen="" loading="lazy"></iframe>
+</div>
+{% endblock %}

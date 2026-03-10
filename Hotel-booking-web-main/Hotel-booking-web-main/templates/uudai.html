@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Ưu đãi đặc biệt - F4 Hotel{% endblock %}
+{% block nav_class %}sub-page{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --dark-forest: #1a2a22;
+        --gold: #d4af37;
+        --gold-light: #f4e4bc;
+    }
+
+    /* --- HEADER VỚI HÌNH NỀN --- */
+    .page-header {
+        height: 500px; /* Tăng nhẹ độ cao để tiêu đề trông thoáng hơn */
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://png.pngtree.com/thumb_back/fw800/background/20240716/pngtree-futuristic-villa-in-the-forest-background-generative-ai-image_16013367.jpg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0;
+    }
+
+    /* Đảm bảo tiêu đề chính trên nền ảnh là màu trắng để dễ đọc */
+    .page-header .main-title {
+        color: #ffffff !important;
+        margin-top: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* --- BREADCRUMB (Trang chủ / Ưu đãi) --- */
+    .breadcrumb-area {
+        background: #fcfaf5;
+        padding: 25px 0 10px 0; /* Căn chỉnh khoảng cách cho thoáng */
+    }
+
+    /* --- PHẦN TIÊU ĐỀ (GIỮ NGUYÊN HIỆU ỨNG CỦA BẠN) --- */
+    .section-title-wrapper {
+        text-align: center;
+        margin-bottom: 60px;
+        margin-top: 30px;
+    }
+    .text-gold-caps {
+        color: var(--gold);
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .main-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--dark-forest);
+        margin-top: 10px;
+    }
+    .title-line {
+        width: 80px;
+        height: 2px;
+        background: var(--gold);
+        margin: 20px auto 0;
+    }
+
+    /* --- DANH SÁCH ƯU ĐÃI (HIỆU ỨNG SO LE) --- */
+    .promo-section { padding: 40px 0 100px 0; background-color: #fcfaf5; }
+    
+    .uu-dai-item:nth-child(even) { flex-direction: row-reverse; }
+    .uu-dai-item:nth-child(even) .khung-thong-tin { 
+        margin-left: 0; 
+        margin-right: -5%; 
+        border-left: none; 
+        border-right: 5px solid var(--gold); 
+    }
+
+    .img-container { overflow: hidden; width: 65%; height: 450px; border-radius: 4px; }
+    .anh-uu-dai { 
+        width: 100%; height: 100%; object-fit: cover; 
+        transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); 
+    }
+    .uu-dai-item:hover .anh-uu-dai { transform: scale(1.1); }
+
+    .khung-thong-tin { 
+        width: 40%; 
+        background: white; 
+        padding: 45px; 
+        margin-left: -5%; 
+        z-index: 2; 
+        border-left: 5px solid var(--gold);
+        box-shadow: 0 15px 45px rgba(0,0,0,0.08);
+    }
+
+    .btn-luxury {
+        background: var(--dark-forest);
+        color: white;
+        padding: 12px 35px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 20px;
+        font-size: 13px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transition: 0.4s;
+        border: 1px solid var(--dark-forest);
+    }
+    .btn-luxury:hover {
+        background: transparent;
+        color: var(--dark-forest);
+    }
+
+    @media (max-width: 992px) {
+        .uu-dai-item, .uu-dai-item:nth-child(even) { flex-direction: column !important; }
+        .img-container, .khung-thong-tin { width: 100% !important; margin: 0 !important; }
+        .khung-thong-tin { padding: 30px; border-right: none !important; border-left: 5px solid var(--gold) !important; }
+    }
+</style>
+
+<section class="page-header">
+    <div class="container text-center">
+        <div class="section-title-wrapper mb-0">
+            <h6 class="text-gold-caps" style="color: var(--gold); text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Special Offers</h6>
+            <h1 class="display-3 main-title text-white" style="font-family: 'Playfair Display'; font-weight: 700;">Ưu đãi & Trải nghiệm</h1>
+            <div class="title-line" style="background: var(--gold); height: 2px; width: 80px; margin: 20px auto 0;"></div>
+        </div>
+    </div>
+</section>
+
+<div class="breadcrumb-area">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <p class="small text-uppercase" style="letter-spacing: 2px; margin-bottom: 0;">
+                <a href="{{ url_for('index') }}" class="text-decoration-none text-muted">Trang chủ</a> 
+                <span class="mx-2 text-muted">/</span> 
+                <span class="text-gold">Ưu đãi độc quyền</span>
+            </p>
+        </nav>
+    </div>
+</div>
+
+<div class="promo-section">
+    <div class="container">
+        {% for item in danh_sach_uu_dai %}
+        <div class="uu-dai-item mb-5 d-flex align-items-center position-relative py-4">
+            <div class="img-container shadow">
+                <img src="{{ url_for('static', filename=item[3]) }}" class="anh-uu-dai" alt="{{ item[1] }}">
+            </div>
+
+            <div class="khung-thong-tin">
+                <h6 class="text-gold mb-2 small text-uppercase" style="letter-spacing: 3px;">Limited Time Offer</h6>
+                <h2 class="mb-3" style="font-family: 'Playfair Display'; color: var(--dark-forest);">{{ item[1] }}</h2> 
+                
+                <p class="gia mb-3" style="color: var(--gold); font-weight: 600; font-size: 1.3rem;">
+                    {{ "{:,.0f}".format(item[4]) }} VNĐ <span class="text-muted small fw-light">/ Package</span>
+                </p> 
+                
+                <p class="text-muted mb-4" style="line-height: 1.8; font-weight: 300;">{{ item[2] }}</p> 
+                
+                <a href="#" class="btn-luxury">Khám phá chi tiết</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

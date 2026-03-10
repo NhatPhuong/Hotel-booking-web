@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}F4 Hotel & Restaurant{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root { 
+            --gold: #d4af37; 
+            --gold-light: #f4e4bc;
+            --dark-forest: #1a2a22; 
+            --luxury-black: #0f1411; 
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            color: #4a4a4a; 
+            background-color: #fcfaf5; 
+            overflow-x: hidden; 
+        }
+        
+        h1, h2, h3, .nav-link, .navbar-brand { font-family: 'Playfair Display', serif; }
+
+        /* --- HEADER --- */
+        .navbar { 
+            background: transparent !important; 
+            position: fixed; 
+            top: 0; width: 100%; z-index: 1000;
+            transition: all 0.4s ease;
+            padding: 20px 0;
+        }
+
+        /* Khi ở trang con, navbar cần có nền tối để thấy chữ trắng */
+        .navbar.sub-page {
+            background: var(--dark-forest) !important;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .navbar.scrolled {
+            background: rgba(26, 42, 34, 0.95) !important; 
+            padding: 10px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .navbar .nav-link { 
+            color: white !important; 
+            font-weight: 300; 
+            letter-spacing: 1px;
+            margin: 0 10px;
+        }
+        .navbar .nav-link:hover { color: var(--gold) !important; }
+
+        .btn-booking { 
+            background: var(--gold); 
+            color: var(--dark-forest); 
+            padding: 12px 30px; 
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            border: none;
+        }
+        .btn-booking:hover { background: white; color: var(--dark-forest); }
+        .text-gold { color: var(--gold) !important; }
+        
+        /* Padding cho nội dung để không bị che bởi navbar ở trang con */
+        main.sub-content { padding-top: 100px; }
+    </style>
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg {% block nav_class %}{% endblock %}">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-2" href="{{ url_for('index') }}" style="color: white !important;">F4 <span class="text-gold">HOTEL</span></a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('all_rooms_page') }}">Phòng nghỉ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Ẩm thực</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('uu_dai') }}">Ưu đãi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('lien_he') }}">Liên hệ</a></li>
+                </ul>
+            </div>
+
+            <div class="d-none d-lg-block">
+                <a href="{{ url_for('dat_phong_page') }}" class="btn-booking text-decoration-none">Đặt phòng</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="{% if self.nav_class() %}sub-content{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener('scroll', function () {
+            var navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) { navbar.classList.add('scrolled'); } 
+            else { navbar.classList.remove('scrolled'); }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
